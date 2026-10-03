@@ -8,12 +8,11 @@ The program allows users to select stocks, enter quantities, calculate individua
 
 The investment is calculated using:
 
-**Investment = Stock Price × Quantity**
+Investment = Stock Price × Quantity
 
 ---
 
 ## 🚀 Features
-
 
 - Displays available stocks and their prices.
 - Accepts stock name from the user.
@@ -27,22 +26,21 @@ The investment is calculated using:
 - Stores stock, quantity, price, and investment details.
 - Displays a complete portfolio summary.
 - Calculates total portfolio investment.
-- Validates `yes/no` input when adding another stock.
-- Saves portfolio details to `portfolio.txt`.
+- Validates yes/no input when adding another stock.
+- Saves portfolio details to portfolio.txt.
 
 ---
 
 ## 🛠️ Technologies Used
 
-
-- **Python**
+- Python
 - Dictionaries
 - Lists
 - Tuples
-- `input()` and `print()`
+- input() and print()
 - Conditional statements
-- `while` and `for` loops
-- `try-except` exception handling
+- while and for loops
+- try-except exception handling
 - Arithmetic operations
 - File handling
 - String methods
@@ -51,7 +49,6 @@ The investment is calculated using:
 
 ## 📂 Project Structure
 
-```text
 CodeAlpha_StockPortfolio/
 │
 ├── stock_portfolio.py
@@ -66,50 +63,46 @@ The program currently contains the following sample stock prices:
 
 | Stock | Price |
 |-------|------:|
-| AAPL  | $180 |
-| TSLA  | $250 |
-| GOOGL | $150 |
-| AMZN  | $180 |
-| MSFT  | $420 |
+| AAPL  | $180  |
+| TSLA  | $250  |
+| GOOGL | $150  |
+| AMZN  | $180  |
+| MSFT  | $420  |
 
-> These are sample/static prices used for the internship project and are not live market prices.
+These are sample/static prices used for the internship project and are not live market prices.
 
 ---
 
 ## ▶️ How to Run
 
-```
-
 ### 1. Open the project folder
 
-    Open the project folder in VS Code or a terminal.
+Open the project folder in VS Code or a terminal.
 
 ### 2. Run the Python program
 
-    ```bash
-    python stock_portfolio.py
-    ```
+python stock_portfolio.py
 
 ### 3. Follow the instructions
 
-    Enter the stock name and quantity when prompted.
-    The program will calculate the investment and allow you to add another stock.
+Enter the stock name and quantity when prompted.
+
+The program will calculate the investment and allow you to add another stock.
 
 ---
 
 ## 🧮 Example
 
-
-=================================
-     STOCK PORTFOLIO TRACKER
-=================================
+=======================
+STOCK PORTFOLIO TRACKER
+=======================
 
 Available Stocks:
-AAPL - $180
-TSLA - $250
-GOOGL - $150
-AMZN - $180
-MSFT - $420
+AAPL → $ 180
+TSLA → $ 250
+GOOGL → $ 150
+AMZN → $ 180
+MSFT → $ 420
 
 Enter stock name: AAPL
 Stock found!
@@ -127,22 +120,22 @@ Investment value: $ 500
 
 Do you want to add another stock? (yes/no): no
 
-=============================================
-           PORTFOLIO SUMMARY
-=============================================
+=========================
+    PORTFOLIO SUMMARY
+=========================
 
 Stock   Quantity   Price   Value
 AAPL    5          $180    $900
 TSLA    2          $250    $500
 
 Total Investment: $ 1400
-=============================================
+===================================
 
 ---
 
 ## ⚠️ Input Validation
 
-The program handles different invalid inputs:
+The program handles different invalid inputs.
 
 ### Invalid Stock
 
@@ -150,22 +143,17 @@ Enter stock name: ABC
 
 Stock not found.
 
-
 ### Invalid Quantity
-
 
 Enter quantity: abc
 
 Please enter a valid number.
 
-
 ### Zero or Negative Quantity
-
 
 Enter quantity: -5
 
 Quantity must be greater than 0.
-
 
 ### Invalid Yes/No Input
 
@@ -178,26 +166,30 @@ Please enter yes or no.
 ## 💾 File Handling
 
 The program saves the portfolio information in portfolio.txt.
+
 The saved file contains:
+
 - Stock name
 - Quantity
 - Stock price
 - Individual investment value
 - Total investment
 
-    ### Example:
-        STOCK PORTFOLIO
-        ====================
+### Example
 
-        Stock   Quantity   Price   Value
-        --------------------------------
-        AAPL    5          $180    $900
-        TSLA    2          $250    $500
+STOCK PORTFOLIO
+====================
 
-        Total Investment: $1400
+Stock   Quantity   Price   Value
+--------------------------------
+AAPL    5          $180    $900
+TSLA    2          $250    $500
 
-    This allows the portfolio information to remain available after the program is closed.
+Total Investment: $1400
 
+This allows the portfolio information to remain available after the program is closed.
+
+---
 
 ## 📚 Concepts Used
 
@@ -252,17 +244,16 @@ The project can be improved in the future by adding:
 
 ## 👩‍💻 Internship
 
-**Developed as part of the CodeAlpha Python Programming Internship.**
+Developed as part of the CodeAlpha Python Programming Internship.
 
-**Task:** Stock Portfolio Tracker
+Task: Stock Portfolio Tracker
 
-**Language:** Python
+Language: Python
 
-**Project Type:** Console-Based Application
+Project Type: Console-Based Application
 
 ---
 
 ## 📄 License
 
 This project is created for educational and internship purposes.
-```
