@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PortfolioPilot | Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <h2 class="brand">◈ PortfolioPilot</h2>
+
+        <p class="side-heading">WORKSPACE</p>
+
+        <a href="/" class="nav active">▦ Dashboard</a>
+        <a href="#holdings" class="nav">▤ My Holdings</a>
+        <a href="#transactions" class="nav">◷ Transactions</a>
+
+        <div class="side-bottom">
+            <span class="status-dot"></span> Demo Mode
+            <small>Sample prices only</small>
+        </div>
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">OVERVIEW</p>
+                <h1>Dashboard</h1>
+            </div>
+
+            <a href="{{ url_for('export_csv') }}" class="export-btn">
+                ↓ Export CSV
+            </a>
+        </header>
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+
+        <div class="notice">
+            <strong>Demo data:</strong>
+            Prices are fixed sample values, not live stock-market prices.
+        </div>
+
+
+        <section class="stats">
+
+            <div class="stat-card">
+                <p>Total Invested</p>
+                <h2>${{ "%.2f"|format(total_invested) }}</h2>
+                <small>Based on average buy price</small>
+            </div>
+
+            <div class="stat-card">
+                <p>Portfolio Value</p>
+                <h2>${{ "%.2f"|format(total_value) }}</h2>
+                <small>Using sample prices</small>
+            </div>
+
+            <div class="stat-card">
+                <p>Unrealized Profit / Loss</p>
+
+                <h2 class="{{ 'positive' if total_pnl >= 0 else 'negative' }}">
+                    ${{ "%+.2f"|format(total_pnl) }}
+                </h2>
+
+                <small>Portfolio value minus invested amount</small>
+            </div>
+
+        </section>
+
+
+        <section class="content-grid">
+
+            <div class="panel" id="holdings">
+
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">YOUR INVESTMENTS</p>
+                        <h2>My Holdings</h2>
+                    </div>
+
+                    <span class="count">{{ holdings|length }} Assets</span>
+                </div>
+
+
+                {% if holdings %}
+
+                <div class="table-container">
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ASSET</th>
+                                <th>QUANTITY</th>
+                                <th>AVG. BUY</th>
+                                <th>PRICE</th>
+                                <th>VALUE</th>
+                                <th>P/L</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                        {% for h in holdings %}
+
+                            <tr>
+                                <td>
+                                    <strong>{{ h.symbol }}</strong>
+                                    <small>{{ h.name }}</small>
+                                </td>
+
+                                <td>{{ "%.4g"|format(h.quantity) }}</td>
+                                <td>${{ "%.2f"|format(h.avg_price) }}</td>
+                                <td>${{ "%.2f"|format(h.market_price) }}</td>
+                                <td>${{ "%.2f"|format(h.value) }}</td>
+
+                                <td class="{{ 'positive' if h.pnl >= 0 else 'negative' }}">
+                                    ${{ "%+.2f"|format(h.pnl) }}
+                                </td>
+
+                                <td>
+                                    <form action="{{ url_for('sell_stock') }}"
+                                          method="POST"
+                                          class="sell-form">
+
+                                        <input type="hidden"
+                                               name="symbol"
+                                               value="{{ h.symbol }}">
+
+                                        <input type="number"
+                                               name="quantity"
+                                               min="0.01"
+                                               max="{{ h.quantity }}"
+                                               step="0.01"
+                                               placeholder="Qty"
+                                               required>
+
+                                        <button type="submit" class="sell-btn">
+                                            Sell
+                                        </button>
+                                    </form>
+
+                                    <form action="{{ url_for('delete_holding', symbol=h.symbol) }}"
+                                          method="POST"
+                                          onsubmit="return confirm('Remove this holding?')">
+
+                                        <button type="submit" class="remove-btn">
+                                            Remove
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+                {% else %}
+
+                    <div class="empty">
+                        <div class="empty-icon">▤</div>
+                        <h3>Your portfolio is empty</h3>
+                        <p>Add your first stock using the form.</p>
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="panel add-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">NEW POSITION</p>
+                        <h2>Buy Stocks</h2>
+                    </div>
+
+                    <span class="plus">＋</span>
+                </div>
+
+
+                <form action="{{ url_for('buy_stock') }}"
+                      method="POST"
+                      class="buy-form">
+
+                    <label for="symbol">Select Stock</label>
+
+                    <select name="symbol" id="symbol" required>
+
+                        {% for symbol, stock in stocks.items() %}
+
+                            <option value="{{ symbol }}">
+                                {{ symbol }} — {{ stock.name }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <div class="price-preview">
+                        Sample Price
+                        <strong id="pricePreview">$180.00</strong>
+                    </div>
+
+
+                    <label for="quantity">Quantity</label>
+
+                    <input type="number"
+                           id="quantity"
+                           name="quantity"
+                           min="0.01"
+                           step="0.01"
+                           placeholder="Enter quantity"
+                           required>
+
+
+                    <button type="submit" class="primary-btn">
+                        ＋ Add to Portfolio
+                    </button>
+
+                </form>
+
+
+                <div class="chart-area">
+
+                    <p class="eyebrow">PORTFOLIO ALLOCATION</p>
+
+                    <div class="chart-wrap">
+
+                        {% if holdings %}
+                            <canvas id="allocationChart"></canvas>
+                        {% else %}
+                            <p class="chart-empty">
+                                Your chart will appear after adding stocks.
+                            </p>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="panel transaction-panel" id="transactions">
+
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">RECENT ACTIVITY</p>
+                    <h2>Transaction History</h2>
+                </div>
+            </div>
+
+
+            {% if transactions %}
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>TYPE</th>
+                            <th>ASSET</th>
+                            <th>QUANTITY</th>
+                            <th>PRICE</th>
+                            <th>TOTAL</th>
+                            <th>DATE</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for t in transactions %}
+
+                        <tr>
+                            <td>
+                                <span class="pill {{ 'buy' if t.action == 'BUY' else 'sell' }}">
+                                    {{ t.action }}
+                                </span>
+                            </td>
+
+                            <td><strong>{{ t.symbol }}</strong></td>
+                            <td>{{ "%.4g"|format(t.quantity) }}</td>
+                            <td>${{ "%.2f"|format(t.price) }}</td>
+                            <td>${{ "%.2f"|format(t.total) }}</td>
+                            <td>{{ t.created_at }}</td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+                <p class="empty-text">No transactions yet.</p>
+
+            {% endif %}
+
+        </section>
+
+
+        <footer>
+            PortfolioPilot
+            <span>Built with Python · Flask · SQLite</span>
+        </footer>
+
+    </main>
+
+</div>
+
+
+<script>
+    window.portfolioData = {
+        labels: {{ holdings|map(attribute='symbol')|list|tojson }},
+        values: {{ holdings|map(attribute='value')|list|tojson }},
+        prices: {{ stocks|tojson }}
+    };
+</script>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>
